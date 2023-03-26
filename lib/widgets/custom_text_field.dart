@@ -5,12 +5,12 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 class CustomFormBuilderTextField extends StatelessWidget {
   const CustomFormBuilderTextField({
     super.key,
-    required this.name, required this.hintText, this.validators, String? Function(String?)? validator,
+    required this.name, required this.hintText,  this.validators,
   });
 
   final String name;
   final String hintText;
-  final String? Function(String?)? validators;
+  final FormFieldValidator<String>? validators;
 
   @override
   Widget build(BuildContext context) {

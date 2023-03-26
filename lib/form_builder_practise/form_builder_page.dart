@@ -40,19 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
           padding: const EdgeInsets.all(20),
           child: FormBuilder(
             key: _formKey,
-            skipDisabled: true,
-            //skipDisabled: true means form behaves as 2nd field doesn't exist
-            onChanged: () {
-              if (kDebugMode) {
-                print('changed');
-              }
-            },
-            autovalidateMode: AutovalidateMode.always,
-            //initialValue takes a Map<String, dynamic>
-            initialValue: const {
-              'name': 'initial value',
-            },
-
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -61,54 +48,62 @@ class _MyHomePageState extends State<MyHomePage> {
                   hintText: 'Name',
 
                   //if we only need one validator, we can use
-                  ///validator: FormBuilderValidators.email(),
+                  /// validator: FormBuilderValidators.required(),
 
                   //To create a custom validator
                   /// validator: (value) {
-                  ///condition
-                  /// },
+                  ///  if (value == 'alish') {
+                  ///     return 'true';
+                  ///   }
+                  ///   return null;
+                  // },
 
                   //if we want we can also use multiple validators as:
-                  validator: FormBuilderValidators.compose(
+                  validators: FormBuilderValidators.compose(
                     [
-                      FormBuilderValidators.email(), //for email
-                      FormBuilderValidators.creditCard(), //for creditCard
-                      FormBuilderValidators.integer(), //for only taking integer value
-                      FormBuilderValidators.dateString(), //only takes date in string format like 2012-01-01
-                      FormBuilderValidators.maxWordsCount(100), //word limit
-                      FormBuilderValidators.numeric(), //the input should only be numeric
-                      FormBuilderValidators.minWordsCount(4), //minimum word count
-                      FormBuilderValidators.url(), //feild should contain url eg: google.com
-                      FormBuilderValidators.equal('dfdd'), //the field should be equal to 'dfdd' or whatever you write there
-                      FormBuilderValidators.required(),//field should not be left empty
-                      FormBuilderValidators.compose([]),// takes a of validators like we've used in this case
-                      FormBuilderValidators.maxLength(100),//almost similar as max word count
-                      FormBuilderValidators.minLength(5),// almost similar as min word count
-                      FormBuilderValidators.max(100),//number should be less than or equal to 100
-                      FormBuilderValidators.min(1),//number should be greater than or equal to 1
-                      FormBuilderValidators.equalLength(12),//length of string, integer etc should be equal to 12.no less no more
-                      FormBuilderValidators.notEqual(12),// value should not be equal to 12
-                      FormBuilderValidators.ip(),//value should be the IP address only
+                      FormBuilderValidators.email(),                            //for email
+                      FormBuilderValidators.creditCard(),                       //for creditCard
+                      FormBuilderValidators.integer(),                          //for only taking integer value
+                      FormBuilderValidators.dateString(),                       //only takes date in string format like 2012-01-01
+                      FormBuilderValidators.maxWordsCount(100),                 //word limit
+                      FormBuilderValidators.numeric(),                          //the input should only be numeric
+                      FormBuilderValidators.minWordsCount(4),                   //minimum word count
+                      FormBuilderValidators.url(),                              // field should contain url eg: google.com
+                      FormBuilderValidators.equal('dfdd'),                      //the field should be equal to 'dfdd' or whatever you write there
+                      FormBuilderValidators.required(),                         //field should not be left empty
+                      FormBuilderValidators.compose([]),                        // takes a of validators like we've used in this case
+                      FormBuilderValidators.maxLength(100),                     //almost similar as max word count
+                      FormBuilderValidators.minLength(5),                       // almost similar as min word count
+                      FormBuilderValidators.max(100),                           //number should be less than or equal to 100
+                      FormBuilderValidators.min(1),                             //number should be greater than or equal to 1
+                      FormBuilderValidators.equalLength(12),                    //length of string, integer etc should be equal to 12.no less no more
+                      FormBuilderValidators.notEqual(12),                       // value should not be equal to 12
+                      FormBuilderValidators.ip(),                               //only accepts ip address
+                      FormBuilderValidators.match(r'^[a-zA-Z0-9]+$',errorText: 'not match'),     //value should be the IP address only
                     ],
                   ),
                 ),
                 const SizedBox(height: 10),
-                const CustomFormBuilderTextField(
+                CustomFormBuilderTextField(
                   name: 'Email',
                   hintText: 'Email',
+                  validators: FormBuilderValidators.email(),
                 ),
                 const SizedBox(height: 10),
                 SubmitButton(
                   onPressed: () {
-                    _formKey.currentState?.saveAndValidate();
+                    _formKey.currentState!.save();
+                    if (_formKey.currentState!.validate()) {
+                      Text('Validated');
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Submitted',
-                        ),
-                      ),
-                    );
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(
+                      //     content: Text(
+                      //       'Submitted',
+                      //     ),
+                      //   ),
+                      // );
+                    }
                   },
                 ),
                 ResetButton(
@@ -129,8 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 SaveData(
                   onPressed: () {
-                    _formKey.currentState?.save();
-
                     FocusScope.of(context).unfocus();
 
                     ScaffoldMessenger.of(context).showSnackBar(
